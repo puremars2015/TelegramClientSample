@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
+using TeleSharp.TL.Updates;
 using TLSharp.Core;
 
 namespace TG_Sample
@@ -43,13 +44,39 @@ namespace TG_Sample
 
             //Sample();
 
-            SampleScanFriendList();
+            //SampleScanFriendList();
 
-            //SampleForAfterLogin();
+            //SampleForSendMessage();
 
             //SampleForRecieve();
 
+            SampleForRecievePerson();
+
             Console.WriteLine("execute finish");
+        }
+
+
+        private static void SampleForRecievePerson()
+        {
+            var apiId = 1568679;
+            var apiHash = "d3a1557238175ceb44037283b7bafa6a";
+
+            var client = new TelegramClient(apiId, apiHash);
+            client.ConnectAsync().Wait();
+
+            var state = client.SendRequestAsync<TLState>(new TLRequestGetState()).Result;
+
+            if (state.UnreadCount > 0)
+            {
+                var req = new TLRequestGetDifference() { Date = state.Date, Pts = state.Pts - state.UnreadCount, Qts = state.Qts, Sequence = state.Seq };
+                var diff = client.SendRequestAsync<TLAbsDifference>(req).Result as TLDifference;
+
+                foreach (TLMessage upd in diff.NewMessages)
+                {
+                    Console.WriteLine("New message ({0}): {1}", upd.Date, upd.Message);
+                }
+            }
+
         }
 
         private static void SampleForRecieve()
@@ -69,12 +96,11 @@ namespace TG_Sample
             foreach(var chat in dialog.Chats)
             {
                 var chatObj = ((TLChannel)chat);
-                Console.WriteLine($"{chatObj}");
+                Console.WriteLine($"{chatObj.Title}");
             }
-
         }
 
-        private static void SampleForAfterLogin()
+        private static void SampleForSendMessage()
         {
             var apiId = 1568679;
             var apiHash = "d3a1557238175ceb44037283b7bafa6a";
@@ -94,7 +120,7 @@ namespace TG_Sample
             var me = list.Users.Where(x => x.GetType() == typeof(TLUser) && ((TLUser)x).Phone == "886966883479")
                         .Cast<TLUser>().FirstOrDefault();//@Prof_BlackLotus
 
-            client.SendMessageAsync(new TLInputPeerUser() { UserId = me.Id }, "HELLO James, This is Sherlock on TG APP").Wait();
+            client.SendMessageAsync(new TLInputPeerUser() { UserId = me.Id }, "你是小馬，我也是小馬").Wait();
         }
 
         private static void SampleScanFriendList()

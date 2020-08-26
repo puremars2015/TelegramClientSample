@@ -1,1 +1,3 @@
-/TG_Sample/*
+/TG_Sample/.vs/*
+/TG_Sample/TG_Sample/bin/*
+/TG_Sample/TG_Sample/obj/*

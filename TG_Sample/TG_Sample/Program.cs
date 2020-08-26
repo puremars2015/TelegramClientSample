@@ -43,11 +43,11 @@ namespace TG_Sample
 
             //Sample();
 
-            //SampleScanFriendList();
+            SampleScanFriendList();
 
             //SampleForAfterLogin();
 
-            SampleForRecieve();
+            //SampleForRecieve();
 
             Console.WriteLine("execute finish");
         }

@@ -13,6 +13,9 @@ namespace TG_Sample
 
     //https://blog.holey.cc/2017/08/30/csharp-send-messages-by-telegram-bot/
 
+    //1308961230 Holmes FromId
+    //732924840 Sean FromId
+
     public class TGClient
     {
         TelegramClient client;
@@ -50,11 +53,29 @@ namespace TG_Sample
 
             //SampleForRecieve();
 
-            SampleForRecievePerson();
+            //SampleForRecievePerson();
+
+            SampleGetChat();
 
             Console.WriteLine("execute finish");
         }
 
+
+        private static void SampleGetChat()
+        {
+            var apiId = 1568679;
+            var apiHash = "d3a1557238175ceb44037283b7bafa6a";
+
+            var client = new TelegramClient(apiId, apiHash);
+            client.ConnectAsync().Wait();
+
+            var chats = client.SendRequestAsync<TLChat>(new TLRequestGetAllChats()).Result;
+
+            foreach(var chat in chats.Title)
+            {
+
+            }
+        }
 
         private static void SampleForRecievePerson()
         {
@@ -73,7 +94,7 @@ namespace TG_Sample
 
                 foreach (TLMessage upd in diff.NewMessages)
                 {
-                    Console.WriteLine("New message ({0}): {1}", upd.Date, upd.Message);
+                    Console.WriteLine($"New message ({upd.Date}): {upd.Message},{upd.FromId},{upd.}");
                 }
             }
 
@@ -120,7 +141,7 @@ namespace TG_Sample
             var me = list.Users.Where(x => x.GetType() == typeof(TLUser) && ((TLUser)x).Phone == "886966883479")
                         .Cast<TLUser>().FirstOrDefault();//@Prof_BlackLotus
 
-            client.SendMessageAsync(new TLInputPeerUser() { UserId = me.Id }, "你是小馬，我也是小馬").Wait();
+            client.SendMessageAsync(new TLInputPeerUser() { UserId = me.Id }, "Hi Holmes, I am Sean").Wait();
         }
 
         private static void SampleScanFriendList()
